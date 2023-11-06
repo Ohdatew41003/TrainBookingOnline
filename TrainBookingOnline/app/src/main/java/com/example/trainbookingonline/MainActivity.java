@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-        registerButton.setOnClickListener(new View.OnClickListener() {
+        registerButton.setOnClickListener(ne View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(MainActivity.this, "Đăng ký tài khoản!", Toast.LENGTH_SHORT).show();
