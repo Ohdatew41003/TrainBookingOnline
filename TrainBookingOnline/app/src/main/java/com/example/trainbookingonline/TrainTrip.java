@@ -1,12 +1,15 @@
 package com.example.trainbookingonline;
 import java.io.Serializable;
+import java.util.Map;
+
 public class TrainTrip implements Serializable {
     private String idTrainTrip;
-    private String idTrain;
-    private String gadi;
     private String gaden;
-    private String ngaydi;
+    private String gadi;
+    private String idTrain;
     private String ngayden;
+    private String ngaydi;
+    private Map<String, Cabin> cabins;
     public TrainTrip(){}
     public TrainTrip(String id_TrainTrip, String id_Train, String gadi, String gaden, String ngaydi, String ngayden) {
         this.idTrainTrip = id_TrainTrip;
@@ -16,6 +19,15 @@ public class TrainTrip implements Serializable {
         this.ngaydi = ngaydi;
         this.ngayden = ngayden;
     }
+
+    public Map<String, Cabin> getCabins() {
+        return cabins;
+    }
+
+    public void setCabins(Map<String, Cabin> cabins) {
+        this.cabins = cabins;
+    }
+
     public String getIdTrainTrip() {
         return idTrainTrip;
     }
