@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="toa_list" >
+        <item>Toa 1</item>
+        <item>Toa 2</item>
+        <item>Toa 3</item>
+        <item>Toa 4</item>
+        <item>Toa 5</item>
+        <item>Toa 6</item>
+    </string-array>
+</resources>

@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/item_traintrip"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp"
+    android:layout_margin="5dp"
+    android:background="@drawable/black_border"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:srcCompat="@drawable/baseline_train_24"
+            tools:srcCompat="@drawable/baseline_train_24" />
+
+        <TextView
+            android:id="@+id/textViewIDTrain"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SE20" />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center">
+        <!-- Các phần tử trong LinearLayout thứ nhất -->
+        <TextView
+            android:id="@+id/textView_giodi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="00:00"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/textView_ngaydi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="00/00/0000"
+            android:textColor="#A5A5A5" />
+
+        <TextView
+            android:id="@+id/textView_noidi_noiden"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nơi đi"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center">
+        <!-- Các phần tử trong LinearLayout thứ nhất -->
+        <TextView
+            android:id="@+id/textView_thoigian"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1d 17h 3'"
+            android:textColor="#A5A5A5" />
+
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="1dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="6dp"
+            android:background="#A5A5A5" />
+
+        <TextView
+            android:id="@+id/textView_cho"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Chỗ còn 100"
+            android:textColor="#A5A5A5" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center">
+        <!-- Các phần tử trong LinearLayout thứ nhất -->
+        <TextView
+            android:id="@+id/textView_gioden"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="12:00"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/textView_ngayden"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="30/12/2222"
+            android:textColor="#A5A5A5" />
+
+        <TextView
+            android:id="@+id/textView_thoigiandi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nơi đến"
+            android:textSize="16sp" />
+    </LinearLayout>
+</LinearLayout>

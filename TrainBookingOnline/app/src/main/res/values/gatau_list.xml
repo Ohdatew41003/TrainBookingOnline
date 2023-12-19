@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="gatau_list">
+        <item>Sài Gòn</item>
+        <item>Biên Hòa</item>
+        <item>Bình Thuận</item>
+        <item>Phan Thiết</item>
+        <item>Nha Trang</item>
+        <item>Quy Nhơn</item>
+        <item>Bình Định</item>
+        <item>Quảng Ngãi</item>
+        <item>Đà Nẵng</item>
+        <item>Huế</item>
+        <item>Quảng Trị</item>
+        <item>Thanh Hóa</item>
+        <item>Ninh Bình</item>
+        <item>Hà Nội</item>
+    </string-array>
+</resources>
