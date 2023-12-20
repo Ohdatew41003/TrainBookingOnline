@@ -36,7 +36,7 @@
                 android:textStyle="bold" />
 
             <EditText
-                android:id="@+id/editTextUsername"
+                android:id="@+id/editTextEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="40dp"
@@ -44,7 +44,7 @@
                 android:drawableLeft="@drawable/ic_baseline_person_24"
                 android:drawablePadding="8dp"
                 android:ems="10"
-                android:hint="Username"
+                android:hint="Email"
                 android:inputType="text"
                 android:minHeight="48dp"
                 android:padding="10dp"
@@ -60,7 +60,7 @@
                 android:drawableLeft="@drawable/baseline_lock_24"
                 android:drawablePadding="8dp"
                 android:ems="10"
-                android:hint="Password"
+                android:hint="Mật khẩu"
                 android:inputType="textPassword"
                 android:minHeight="48dp"
                 android:padding="10dp"
@@ -79,14 +79,14 @@
                 android:layout_height="wrap_content" />
 
             <Button
+                android:id="@+id/loginButton"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:id="@+id/loginButton"
-                android:text="Login"
-                android:textSize="18sp"
                 android:layout_marginTop="10dp"
                 android:backgroundTint="@color/blue"
-                app:cornerRadius = "20dp"/>
+                android:text="Đăng nhập"
+                android:textSize="18sp"
+                app:cornerRadius="20dp" />
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>

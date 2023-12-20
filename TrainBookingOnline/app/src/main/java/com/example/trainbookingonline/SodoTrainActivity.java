@@ -3,12 +3,14 @@ package com.example.trainbookingonline;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -37,10 +40,12 @@ import java.util.concurrent.TimeUnit;
 
 public class SodoTrainActivity extends AppCompatActivity {
     private Spinner btn_cabin;
+    private Button btn_tieptuc;
     private TextView textViewIDTrain, textView_noidi_noiden, textView_thoigiandi, textView_toa;
     private SeatAdapter seatAdapter;
     private RecyclerView recyclerView;
     private List<Seat> dataList;
+    private ArrayList<Seat> seats; //danh sách ghế đã chọn
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,12 +53,14 @@ public class SodoTrainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_sodo_train);
 
         btn_cabin = findViewById(R.id.btn_cabin);
+        btn_tieptuc= findViewById(R.id.btn_tieptuc);
         textViewIDTrain= findViewById(R.id.textViewIDTrain);
         textView_thoigiandi= findViewById(R.id.textView_thoigiandi);
         textView_noidi_noiden= findViewById(R.id.textView_noidi_noiden);
         textView_toa= findViewById(R.id.textView_toa);
         recyclerView = findViewById(R.id.list_seat);
         dataList = new ArrayList<>();
+        seats= new ArrayList<>();
 
         Intent intent = getIntent();
         if (intent != null) {
@@ -117,6 +124,18 @@ public class SodoTrainActivity extends AppCompatActivity {
                     }
                 });
             }
+            btn_tieptuc.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(SodoTrainActivity.this,ThanhToanActivity.class);
+                    Bundle bundle= new Bundle();
+                    bundle.putSerializable("obj_seats",seats); //kiểu dữ liệu là ArrayList<Seat>
+                    bundle.putSerializable("obj_traintrip", trainTrip);
+                    Log.d("onClick: ", seats.size()+", "+trainTrip.getIdTrainTrip());
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                }
+            });
         }
     }
     @Override
@@ -146,21 +165,35 @@ public class SodoTrainActivity extends AppCompatActivity {
         public void onBindViewHolder(@NonNull SodoTrainActivity.SeatAdapter.SeatViewHolder holder, int position) {
             Seat data = dataList.get(position);
             holder.bind(data);
-//            holder.item_traintrip.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    onClickGoToSODO(data);
-//                }
-//            });
-        }
+            holder.item_seat.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // Kiểm tra xem view_status có background là seat_booked hay không
+                    Drawable currentBackground = holder.view_status.getBackground();
+                    Drawable bookedDrawable = ContextCompat.getDrawable(mContext, R.drawable.seat_booked);
+                    Drawable choseDrawable = ContextCompat.getDrawable(mContext, R.drawable.seat_chose);
 
-//        private void onClickGoToSODO(TrainTrip trainTrip) {
-//            Intent intent = new Intent(mContext,SodoTrainActivity.class);
-//            Bundle bundle= new Bundle();
-//            bundle.putSerializable("obj_traintrip",trainTrip);
-//            intent.putExtras(bundle);
-//            mContext.startActivity(intent);
-//        }
+                    // Nếu là booked thì không cho chọn
+                    if (currentBackground == null || bookedDrawable == null || (currentBackground.getConstantState() == bookedDrawable.getConstantState())) {
+                        return;
+                    }
+
+                    // Nếu đã chọn thì cho qua lại ban đầu
+                    if (currentBackground.getConstantState() == choseDrawable.getConstantState()){
+                        holder.view_status.setBackgroundResource(R.drawable.black_border);
+                        holder.view_tmp.setBackgroundColor(Color.parseColor("#000000"));
+                        holder.item_seat_linear.setBackgroundResource(R.drawable.black_border);
+                        return;
+                    }
+
+                    //Click chọn chỗ
+                    holder.view_status.setBackgroundResource(R.drawable.seat_chose);
+                    holder.view_tmp.setBackgroundColor(Color.parseColor("#00FFFF"));
+                    holder.item_seat_linear.setBackgroundResource(R.drawable.blue_border);
+                    seats.add(data);
+                }
+            });
+        }
         public void release(){
             mContext = null;
         }
@@ -172,12 +205,15 @@ public class SodoTrainActivity extends AppCompatActivity {
 
         public class SeatViewHolder extends RecyclerView.ViewHolder {
             private TextView textView_soghe, textView_sotien;
-            private View view_status;
+            private View view_status, view_tmp;
             private CardView item_seat;
+            private LinearLayout item_seat_linear;
             public SeatViewHolder(@NonNull View itemView) {
                 super(itemView);
                 item_seat= itemView.findViewById(R.id.item_seat);
+                item_seat_linear=itemView.findViewById(R.id.item_seat_linear);
                 view_status= itemView.findViewById(R.id.view_status);
+                view_tmp= itemView.findViewById(R.id.view_tmp);
                 textView_soghe= itemView.findViewById(R.id.textView_soghe);
                 textView_sotien= itemView.findViewById(R.id.textView_sotien);
             }
@@ -196,9 +232,13 @@ public class SodoTrainActivity extends AppCompatActivity {
                 switch (seat_status){
                     case "booked":
                         view_status.setBackgroundResource(R.drawable.seat_booked);
+                        view_tmp.setBackgroundColor(Color.parseColor("#CC0000"));
+                        item_seat_linear.setBackgroundResource(R.drawable.red_border);
                         break;
                     case "available":
                         view_status.setBackgroundResource(R.drawable.black_border);
+                        view_tmp.setBackgroundColor(Color.parseColor("#000000"));
+                        item_seat_linear.setBackgroundResource(R.drawable.black_border);
                         break;
                     default:
                         break;
