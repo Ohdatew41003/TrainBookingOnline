@@ -30,7 +30,7 @@
                 tools:srcCompat="@drawable/baseline_train_24" />
 
             <TextView
-                android:id="@+id/textViewIDTrain"
+                android:id="@+id/textView_toa_ghe"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"

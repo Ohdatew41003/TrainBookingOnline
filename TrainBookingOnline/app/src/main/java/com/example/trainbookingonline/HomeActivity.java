@@ -16,6 +16,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import java.util.Calendar;
+import java.util.Locale;
 
 public class HomeActivity extends AppCompatActivity {
     Button btn_ngaydi, btn_ngayve, btn_timchuyen, btn_swap;
@@ -26,6 +27,9 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        Locale vietnamLocale = new Locale("vi", "VN");
+        Locale.setDefault(vietnamLocale);
 
         btn_swap= findViewById(R.id.btn_swap);
         btn_ngaydi=findViewById(R.id.btn_ngaydi);

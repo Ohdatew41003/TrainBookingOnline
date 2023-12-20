@@ -30,7 +30,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         //Lưu trữ email người dùng để sử dụng trong app
-        SharedPreferences sharedPreferences= getSharedPreferences("User_Store", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences= getSharedPreferences("User_Storage", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor= sharedPreferences.edit();
         editor.clear();
         editor.apply();

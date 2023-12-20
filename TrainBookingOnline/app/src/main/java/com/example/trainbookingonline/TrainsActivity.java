@@ -183,11 +183,11 @@ public class TrainsActivity extends AppCompatActivity {
             public TrainTripViewHolder(@NonNull View itemView) {
                 super(itemView);
                 item_traintrip= itemView.findViewById(R.id.item_traintrip);
-                textViewIDTrain = itemView.findViewById(R.id.textViewIDTrain);
-                textView_giodi = itemView.findViewById(R.id.textView_giodi);
-                textView_gioden = itemView.findViewById(R.id.textView_gioden);
-                textView_noidi = itemView.findViewById(R.id.textView_noidi_noiden);
-                textView_noiden = itemView.findViewById(R.id.textView_thoigiandi);
+                textViewIDTrain = itemView.findViewById(R.id.textView_toa_ghe);
+                textView_giodi = itemView.findViewById(R.id.textView_thongtinve);
+                textView_gioden = itemView.findViewById(R.id.textViewTong_ticket);
+                textView_noidi = itemView.findViewById(R.id.textView_noidi);
+                textView_noiden = itemView.findViewById(R.id.textView_noiden);
                 textView_cho = itemView.findViewById(R.id.textView_cho);
                 textView_thoigian = itemView.findViewById(R.id.textView_thoigian);
                 textView_ngaydi = itemView.findViewById(R.id.textView_ngaydi);

@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
@@ -13,7 +12,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,21 +20,16 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import org.w3c.dom.Text;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 public class SodoTrainActivity extends AppCompatActivity {
     private Spinner btn_cabin;
@@ -54,7 +47,7 @@ public class SodoTrainActivity extends AppCompatActivity {
 
         btn_cabin = findViewById(R.id.btn_cabin);
         btn_tieptuc= findViewById(R.id.btn_tieptuc);
-        textViewIDTrain= findViewById(R.id.textViewIDTrain);
+        textViewIDTrain= findViewById(R.id.textView_toa_ghe);
         textView_thoigiandi= findViewById(R.id.textView_thoigiandi);
         textView_noidi_noiden= findViewById(R.id.textView_noidi_noiden);
         textView_toa= findViewById(R.id.textView_toa);
@@ -131,7 +124,6 @@ public class SodoTrainActivity extends AppCompatActivity {
                     Bundle bundle= new Bundle();
                     bundle.putSerializable("obj_seats",seats); //kiểu dữ liệu là ArrayList<Seat>
                     bundle.putSerializable("obj_traintrip", trainTrip);
-                    Log.d("onClick: ", seats.size()+", "+trainTrip.getIdTrainTrip());
                     intent.putExtras(bundle);
                     startActivity(intent);
                 }
@@ -178,11 +170,12 @@ public class SodoTrainActivity extends AppCompatActivity {
                         return;
                     }
 
-                    // Nếu đã chọn thì cho qua lại ban đầu
+                    // Nếu đã chọn thì cho quay lại ban đầu
                     if (currentBackground.getConstantState() == choseDrawable.getConstantState()){
                         holder.view_status.setBackgroundResource(R.drawable.black_border);
                         holder.view_tmp.setBackgroundColor(Color.parseColor("#000000"));
                         holder.item_seat_linear.setBackgroundResource(R.drawable.black_border);
+                        seats.remove(data);
                         return;
                     }
 
@@ -221,7 +214,6 @@ public class SodoTrainActivity extends AppCompatActivity {
             public void bind(Seat data) {
                 textView_soghe.setText(data.getSeatNumber()+"");
                 int price= data.getPrice();
-                Log.d("bind: ", price+"");
                 if (price >= 1000) {
                     double result = price / 1000.0;
                     textView_sotien.setText(String.format("%.1fK", result));
@@ -242,6 +234,13 @@ public class SodoTrainActivity extends AppCompatActivity {
                         break;
                     default:
                         break;
+                }
+                for (Seat seat: seats){
+                    if(data.getSeatNumber() == seat.getSeatNumber()){
+                        view_status.setBackgroundResource(R.drawable.seat_chose);
+                        view_tmp.setBackgroundColor(Color.parseColor("#00FFFF"));
+                        item_seat_linear.setBackgroundResource(R.drawable.blue_border);
+                    }
                 }
             }
         }

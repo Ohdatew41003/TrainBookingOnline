@@ -26,7 +26,7 @@
             tools:srcCompat="@drawable/baseline_train_24" />
 
         <TextView
-            android:id="@+id/textViewIDTrain"
+            android:id="@+id/textView_toa_ghe"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="SE20" />
@@ -42,7 +42,7 @@
         android:gravity="center">
         <!-- Các phần tử trong LinearLayout thứ nhất -->
         <TextView
-            android:id="@+id/textView_giodi"
+            android:id="@+id/textView_thongtinve"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="00:00"
@@ -57,7 +57,7 @@
             android:textColor="#A5A5A5" />
 
         <TextView
-            android:id="@+id/textView_noidi_noiden"
+            android:id="@+id/textView_noidi"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Nơi đi"
@@ -101,7 +101,7 @@
         android:gravity="center">
         <!-- Các phần tử trong LinearLayout thứ nhất -->
         <TextView
-            android:id="@+id/textView_gioden"
+            android:id="@+id/textViewTong_ticket"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="12:00"
@@ -116,7 +116,7 @@
             android:textColor="#A5A5A5" />
 
         <TextView
-            android:id="@+id/textView_thoigiandi"
+            android:id="@+id/textView_noiden"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Nơi đến"

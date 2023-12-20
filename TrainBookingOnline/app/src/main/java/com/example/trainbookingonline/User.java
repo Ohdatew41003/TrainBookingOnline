@@ -6,7 +6,7 @@ public class User implements Serializable {
     private String email;
     private String phoneNumber;
     private String password;
-    private String fullname;
+    private String fullName;
     private String cccd;
     private String imageUrl;
     private String userUID;
@@ -18,7 +18,7 @@ public class User implements Serializable {
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.password = password;
-        this.fullname = fullname;
+        this.fullName = fullname;
         this.cccd = cccd;
         this.imageUrl = imageUrl;
         this.userUID = userUID;
@@ -48,12 +48,12 @@ public class User implements Serializable {
         this.password = password;
     }
 
-    public String getFullname() {
-        return fullname;
+    public String getFullName() {
+        return fullName;
     }
 
-    public void setFullname(String fullname) {
-        this.fullname = fullname;
+    public void setFullName(String fullname) {
+        this.fullName = fullname;
     }
 
     public String getCccd() {
