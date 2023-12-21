@@ -116,6 +116,23 @@ public class ThanhToanActivity extends AppCompatActivity {
                     btn_tieptucthanhtoan.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+//                            for (Seat seat:dataList){
+//                                String numSeat="seat";
+//                                if (seat.getSeatNumber()<10){
+//                                    numSeat=numSeat+"0"+seat.getSeatNumber();
+//                                }else {
+//                                    numSeat=numSeat+seat.getSeatNumber();
+//                                }
+//                                DatabaseReference seatRef = FirebaseDatabase.getInstance().getReference()
+//                                        .child("trips")
+//                                        .child(trainTrip.getIdTrainTrip()) // ID trip
+//                                        .child("cabins")
+//                                        .child(seat.getCabin()) // Tên Cabin
+//                                        .child("seats")
+//                                        .child(numSeat); // Tên Seat
+//                                seatRef.child("status").setValue("booked");
+//                            }
+
                             Intent intent_Thanhtoan = new Intent(ThanhToanActivity.this,PhuongThucThanhToanActivity.class);
                             Bundle bundle= new Bundle();
                             bundle.putSerializable("obj_seats",new ArrayList<>(dataList)); //kiểu dữ liệu là ArrayList<Seat> (Danh sách ghế đã chọn)
