@@ -1,9 +1,13 @@
 package com.example.trainbookingonline;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,13 +27,22 @@ public class HomeActivity extends AppCompatActivity {
     RadioButton btn_motchieu, btn_khuhoi;
     Spinner spinner_gadi, spinner_gaden;
     RadioGroup radiogroup_luachon;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, 101);
+        }
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.SCHEDULE_EXACT_ALARM) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.SCHEDULE_EXACT_ALARM}, 101);
+        }
+
         Locale vietnamLocale = new Locale("vi", "VN");
         Locale.setDefault(vietnamLocale);
+
 
         btn_swap= findViewById(R.id.btn_swap);
         btn_ngaydi=findViewById(R.id.btn_ngaydi);
@@ -118,7 +131,9 @@ public class HomeActivity extends AppCompatActivity {
                 }
             }
         });
+
     }
+
     private void showDatePickerDialog(Button button) {
         final Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);

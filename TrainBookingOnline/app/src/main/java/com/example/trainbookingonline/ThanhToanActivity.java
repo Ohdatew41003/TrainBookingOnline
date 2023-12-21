@@ -3,13 +3,19 @@ package com.example.trainbookingonline;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.AlarmManagerCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlarmManager;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,6 +25,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -31,6 +38,7 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -48,11 +56,16 @@ public class ThanhToanActivity extends AppCompatActivity {
     private TrainTrip trainTrip;
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference usersRef = database.getReference("users");
+    private AlarmManager alarmManager;
+    private PendingIntent pendingIntent;
+    private Calendar calendar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_thanh_toan);
+
+        createNotificationChannel();
 
         dataList=new ArrayList<>();
         recyclerView=findViewById(R.id.list_ve);
@@ -140,10 +153,43 @@ public class ThanhToanActivity extends AppCompatActivity {
                             bundle.putSerializable("obj_user",user); //kiểu dữ liệu user
                             intent_Thanhtoan.putExtras(bundle);
                             startActivity(intent_Thanhtoan);
+
+                            alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                            Intent intentThongBao = new Intent(ThanhToanActivity.this,AlarmReceiver.class);
+                            pendingIntent= PendingIntent.getBroadcast(ThanhToanActivity.this,0,intentThongBao,PendingIntent.FLAG_MUTABLE);
+
+                            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+                            Calendar calendar = Calendar.getInstance();
+//                            calendar.add(Calendar.SECOND, 5);
+
+                            try {
+//                                Log.d("TAG", trainTrip.getNgaydi());
+                                Date date = dateFormat.parse(trainTrip.getNgaydi());
+                                calendar.setTime(date);
+                                calendar.add(Calendar.DATE, -1); //Thông báo trước 1 ngày
+//                                calendar.add(Calendar.MONTH,1);
+                                Log.d("TAG", calendar.toString());
+                                alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+                                Toast.makeText(ThanhToanActivity.this, "Cài đặt nhắc nhở thành công", Toast.LENGTH_SHORT).show();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
                     });
                 }
             }
+        }
+    }
+    private void createNotificationChannel(){
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            CharSequence name="trainBookingReminderChannel";
+            String desc = "Channel for Notification about TrainTrip";
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel channel=new NotificationChannel("trainBooking",name,importance);
+            channel.setDescription(desc);
+
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
         }
     }
     @Override
