@@ -3,6 +3,7 @@ package com.example.trainbookingonline;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.core.app.ShareCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -11,15 +12,30 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.dynamiclinks.DynamicLink;
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
+import com.google.firebase.dynamiclinks.ShortDynamicLink;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -34,11 +50,13 @@ import java.util.Map;
 public class SodoTrainActivity extends AppCompatActivity {
     private Spinner btn_cabin;
     private Button btn_tieptuc;
+    private ImageButton btn_shareTrainTrip;
     private TextView textViewIDTrain, textView_noidi_noiden, textView_thoigiandi, textView_toa;
     private SeatAdapter seatAdapter;
     private RecyclerView recyclerView;
     private List<Seat> dataList;
     private ArrayList<Seat> seats; //danh sách ghế đã chọn
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,8 +70,19 @@ public class SodoTrainActivity extends AppCompatActivity {
         textView_noidi_noiden= findViewById(R.id.textView_noidi_noiden);
         textView_toa= findViewById(R.id.textView_toa);
         recyclerView = findViewById(R.id.list_seat);
+        btn_shareTrainTrip=findViewById(R.id.btn_shareTrainTrip);
         dataList = new ArrayList<>();
         seats= new ArrayList<>();
+        // ATTENTION: This was auto-generated to handle app links.
+//        Intent appLinkIntent = getIntent();
+//        String appLinkAction = appLinkIntent.getAction();
+//        Uri appLinkData = appLinkIntent.getData();
+//        if (appLinkData != null) {
+//            String idTrainTrip = appLinkData.getQueryParameter("idTrainTrip");
+//            if (idTrainTrip != null) {
+//                Log.d("idTrainTrip", idTrainTrip);
+//            }
+//        }
 
         Intent intent = getIntent();
         if (intent != null) {
@@ -128,8 +157,90 @@ public class SodoTrainActivity extends AppCompatActivity {
                     startActivity(intent);
                 }
             });
+            btn_shareTrainTrip.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    FirebaseDynamicLinks dynamicLinks = FirebaseDynamicLinks.getInstance();
+                    Uri.Builder dynamicLinkUri = Uri.parse("https://trainbookingonline.page.link/traintrip")
+                            .buildUpon()
+                            .appendQueryParameter("idTrainTrip", trainTrip.getIdTrainTrip()+""); // Thay đổi giá trị idTrainTrip ở đây
+
+                    Log.d("link", dynamicLinkUri.toString());
+                    Task<ShortDynamicLink> shortLinkTask = dynamicLinks.createDynamicLink()
+                            .setLink(dynamicLinkUri.build())
+                            .setDomainUriPrefix("https://trainbookingonline.page.link")
+                            .setAndroidParameters(new DynamicLink.AndroidParameters.Builder().build())
+                            .buildShortDynamicLink()
+                            .addOnCompleteListener(SodoTrainActivity.this, new OnCompleteListener<ShortDynamicLink>() {
+                                @Override
+                                public void onComplete(@NonNull Task<ShortDynamicLink> task) {
+                                    if (task.isSuccessful() && task.getResult() != null) {
+                                        Uri shortLink = task.getResult().getShortLink();
+                                        Uri flowchartLink = task.getResult().getPreviewLink();
+
+                                        Log.d("taolink: ", shortLink+"\n"+flowchartLink);
+                                        // Chia sẻ dynamic link
+                                        Intent intentShareTrainTrip = new Intent();
+                                        intentShareTrainTrip.setAction(Intent.ACTION_SEND);
+                                        intentShareTrainTrip.setType("text/plain");
+                                        intentShareTrainTrip.putExtra(Intent.EXTRA_TEXT, shortLink != null ? shortLink.toString() : "No link available");
+                                        startActivity(Intent.createChooser(intentShareTrainTrip, "Choose one"));
+                                    } else {
+                                        Log.d("failt", "sai rồi");
+                                    }
+                                }
+                            });
+
+                }
+            });
         }
     }
+//    private void handleFirebaseData(TrainTrip trainTrip){
+//        if (trainTrip != null) {
+//            //Thông tin chuyến tàu
+//            textViewIDTrain.setText(trainTrip.getIdTrain());
+//            textView_noidi_noiden.setText(trainTrip.getGadi()+" - "+trainTrip.getGaden());
+//            try {
+//                SimpleDateFormat sdfInput = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
+//                SimpleDateFormat sdfOutput = new SimpleDateFormat("HH:mm - dd/MM", Locale.getDefault());
+//                String ngaydi= trainTrip.getNgaydi();
+//                Date date = sdfInput.parse(ngaydi);
+//                String formattedDate = sdfOutput.format(date);
+//                textView_thoigiandi.setText(formattedDate);
+//            } catch (ParseException e) {
+//                e.printStackTrace();
+//            }
+//            String cabinNumber = "1";
+//            textView_toa.setText("Toa số "+cabinNumber);
+//            Cabin cabin = trainTrip.getCabins().get("Cabin-1");
+//
+//            //Clear datalist
+//            dataList.clear();
+//
+//            if (cabin != null) {
+//                Map<String, Seat> seatsMap = cabin.getSeats();
+//                if (seatsMap != null) {
+//                    ArrayList<Seat> seatsList = new ArrayList<>(seatsMap.values());
+//                    // Sắp xếp danh sách ghế theo số ghế tăng dần
+//                    Collections.sort(seatsList, new Comparator<Seat>() {
+//                        @Override
+//                        public int compare(Seat seat1, Seat seat2) {
+//                            // So sánh theo số ghế
+//                            return Integer.compare(seat1.getSeatNumber(), seat2.getSeatNumber());
+//                        }
+//                    });
+//                    // Duyệt từng ghế ngồi
+//                    for (Seat seat : seatsList) {
+//                        dataList.add(seat);
+//                    }
+//                    seatAdapter = new SodoTrainActivity.SeatAdapter(SodoTrainActivity.this, dataList);
+//                    RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getApplicationContext(),4);
+//                    recyclerView.setLayoutManager(layoutManager);
+//                    recyclerView.setAdapter(seatAdapter);
+//                }
+//            }
+//        }
+//    }
     @Override
     protected void onDestroy() {
         super.onDestroy();

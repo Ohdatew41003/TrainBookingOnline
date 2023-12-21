@@ -5,7 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,6 +20,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.net.URI;
+
 public class LoginActivity extends AppCompatActivity {
 
     EditText editTextEmail;
@@ -29,11 +33,14 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+//        Uri uri = getIntent().getData();
+//        Log.d("intent: ", uri.getHost()+"");
+
         //Lưu trữ email người dùng để sử dụng trong app
         SharedPreferences sharedPreferences= getSharedPreferences("User_Storage", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor= sharedPreferences.edit();
-        editor.clear();
-        editor.apply();
+//        editor.clear();
+//        editor.apply();
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference usersRef = database.getReference("users");

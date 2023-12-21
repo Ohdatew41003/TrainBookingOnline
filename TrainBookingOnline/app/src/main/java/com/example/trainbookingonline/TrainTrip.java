@@ -19,6 +19,15 @@ public class TrainTrip implements Serializable {
         this.ngaydi = ngaydi;
         this.ngayden = ngayden;
     }
+    public TrainTrip(TrainTrip other) {
+        this.idTrainTrip = other.idTrainTrip;
+        this.idTrain = other.idTrain;
+        this.gadi = other.gadi;
+        this.gaden = other.gaden;
+        this.ngaydi = other.ngaydi;
+        this.ngayden = other.ngayden;
+        this.cabins = other.cabins; // Copy reference, không phải sao chép sâu
+    }
 
     public Map<String, Cabin> getCabins() {
         return cabins;
