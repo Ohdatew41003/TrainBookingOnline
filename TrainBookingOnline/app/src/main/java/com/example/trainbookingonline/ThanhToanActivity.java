@@ -1,11 +1,13 @@
 package com.example.trainbookingonline;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -62,6 +64,12 @@ public class ThanhToanActivity extends AppCompatActivity {
         textView_tongtien=findViewById(R.id.textView_tongtien);
         btn_tieptucthanhtoan=findViewById(R.id.btn_tieptucthanhtoan);
 
+        // Vô hiệu hóa EditText
+        editTextText_hoten.setEnabled(false);
+        editTextText_cccd.setEnabled(false);
+        editTextText_sdt.setEnabled(false);
+        editTextText_email.setEnabled(false);
+
         Intent intent=getIntent();
         if(intent!=null){
             ArrayList<Seat> seats= (ArrayList<Seat>) intent.getSerializableExtra("obj_seats");
@@ -70,7 +78,6 @@ public class ThanhToanActivity extends AppCompatActivity {
                 SharedPreferences sharedPreferences= getSharedPreferences("User_Storage", Context.MODE_PRIVATE);
                 String email = sharedPreferences.getString("email","False Email");
                 if(!email.equals("False Email")){
-                    Log.d("email: ", email);
                     Query query = usersRef.orderByChild("email").equalTo(email);
                     query.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -105,6 +112,19 @@ public class ThanhToanActivity extends AppCompatActivity {
                     RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
                     recyclerView.setLayoutManager(layoutManager);
                     recyclerView.setAdapter(seatAdapter);
+
+                    btn_tieptucthanhtoan.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent_Thanhtoan = new Intent(ThanhToanActivity.this,PhuongThucThanhToanActivity.class);
+                            Bundle bundle= new Bundle();
+                            bundle.putSerializable("obj_seats",new ArrayList<>(dataList)); //kiểu dữ liệu là ArrayList<Seat> (Danh sách ghế đã chọn)
+                            bundle.putSerializable("obj_traintrip", trainTrip); //kiểu dữ liệu TrainTrip (Chuyến tàu)
+                            bundle.putSerializable("obj_user",user); //kiểu dữ liệu user
+                            intent_Thanhtoan.putExtras(bundle);
+                            startActivity(intent_Thanhtoan);
+                        }
+                    });
                 }
             }
         }
@@ -135,37 +155,45 @@ public class ThanhToanActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(@NonNull ThanhToanActivity.SeatAdapter.SeatViewHolder holder, int position) {
             Seat data = dataList.get(position);
-            holder.bind(data,trainTrip);
-//            holder.item_seat.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    // Kiểm tra xem view_status có background là seat_booked hay không
-//                    Drawable currentBackground = holder.view_status.getBackground();
-//                    Drawable bookedDrawable = ContextCompat.getDrawable(mContext, R.drawable.seat_booked);
-//                    Drawable choseDrawable = ContextCompat.getDrawable(mContext, R.drawable.seat_chose);
-//
-//                    // Nếu là booked thì không cho chọn
-//                    if (currentBackground == null || bookedDrawable == null || (currentBackground.getConstantState() == bookedDrawable.getConstantState())) {
-//                        return;
-//                    }
-//
-//                    // Nếu đã chọn thì cho quay lại ban đầu
-//                    if (currentBackground.getConstantState() == choseDrawable.getConstantState()){
-//                        holder.view_status.setBackgroundResource(R.drawable.black_border);
-//                        holder.view_tmp.setBackgroundColor(Color.parseColor("#000000"));
-//                        holder.item_seat_linear.setBackgroundResource(R.drawable.black_border);
-//                        seats.remove(data);
-//                        return;
-//                    }
-//
-//                    //Click chọn chỗ
-//                    holder.view_status.setBackgroundResource(R.drawable.seat_chose);
-//                    holder.view_tmp.setBackgroundColor(Color.parseColor("#00FFFF"));
-//                    holder.item_seat_linear.setBackgroundResource(R.drawable.blue_border);
-//                    seats.add(data);
-//                }
-//            });
+            holder.bind(data, trainTrip);
+
+            holder.btn_delete_ticket.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showDeleteConfirmationDialog(data);
+                }
+            });
         }
+
+        // Hàm để hiển thị AlertDialog xác nhận
+        private void showDeleteConfirmationDialog(Seat data) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(ThanhToanActivity.this);
+            builder.setTitle("Xác nhận xóa");
+            builder.setMessage("Bạn có chắc chắn muốn xóa không?");
+
+            // Nút Xác nhận
+            builder.setPositiveButton("Xóa", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dataList.remove(data);
+                    seatAdapter.notifyDataSetChanged();
+                    dialog.dismiss();
+                }
+            });
+
+            // Nút Hủy
+            builder.setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+
+            // Hiển thị AlertDialog
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        }
+
         public void release(){
             mContext = null;
         }

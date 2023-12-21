@@ -61,7 +61,6 @@ public class TrainsActivity extends AppCompatActivity {
                     // Lặp qua từng đối tượng
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         TrainTrip trainTrip = snapshot.getValue(TrainTrip.class);
-                        Log.d("onDataChange: ", trainTrip+"");
                         if (trainTrip.getIdTrainTrip() != null && trainTrip.getGaden().equals(text_gaden) && trainTrip.getGadi().equals(text_gadi) && trainTrip.getNgaydi().contains(text_ngaydi)) {
                             dataList.add(trainTrip);
                         }
