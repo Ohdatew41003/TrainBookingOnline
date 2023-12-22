@@ -37,17 +37,15 @@ public class ShareActivity extends AppCompatActivity {
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if (snapshot.exists()) {
                             for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                                // Lặp qua tất cả các snapshot nếu có nhiều kết quả trả về từ Query
                                 TrainTrip trip = dataSnapshot.getValue(TrainTrip.class);
                                 if (trip != null) {
-                                    // Thực hiện xử lý với thông tin chuyến tàu đã lấy được (trip)
-                                    // Ví dụ: gán cho trainTrip và sau đó xử lý logic tiếp theo
                                     trainTrip= new TrainTrip(trip);
                                     Intent intent = new Intent(ShareActivity.this,SodoTrainActivity.class);
                                     Bundle bundle= new Bundle();
                                     bundle.putSerializable("obj_traintrip",trainTrip);
                                     intent.putExtras(bundle);
                                     ShareActivity.this.startActivity(intent);
+                                    finish();
                                 }
                             }
                         } else {

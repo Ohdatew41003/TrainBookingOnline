@@ -190,7 +190,6 @@ public class SodoTrainActivity extends AppCompatActivity {
                                     }
                                 }
                             });
-
                 }
             });
         }
