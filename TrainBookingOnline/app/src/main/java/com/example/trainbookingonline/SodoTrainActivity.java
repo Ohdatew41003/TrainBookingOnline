@@ -194,52 +194,6 @@ public class SodoTrainActivity extends AppCompatActivity {
             });
         }
     }
-//    private void handleFirebaseData(TrainTrip trainTrip){
-//        if (trainTrip != null) {
-//            //Thông tin chuyến tàu
-//            textViewIDTrain.setText(trainTrip.getIdTrain());
-//            textView_noidi_noiden.setText(trainTrip.getGadi()+" - "+trainTrip.getGaden());
-//            try {
-//                SimpleDateFormat sdfInput = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
-//                SimpleDateFormat sdfOutput = new SimpleDateFormat("HH:mm - dd/MM", Locale.getDefault());
-//                String ngaydi= trainTrip.getNgaydi();
-//                Date date = sdfInput.parse(ngaydi);
-//                String formattedDate = sdfOutput.format(date);
-//                textView_thoigiandi.setText(formattedDate);
-//            } catch (ParseException e) {
-//                e.printStackTrace();
-//            }
-//            String cabinNumber = "1";
-//            textView_toa.setText("Toa số "+cabinNumber);
-//            Cabin cabin = trainTrip.getCabins().get("Cabin-1");
-//
-//            //Clear datalist
-//            dataList.clear();
-//
-//            if (cabin != null) {
-//                Map<String, Seat> seatsMap = cabin.getSeats();
-//                if (seatsMap != null) {
-//                    ArrayList<Seat> seatsList = new ArrayList<>(seatsMap.values());
-//                    // Sắp xếp danh sách ghế theo số ghế tăng dần
-//                    Collections.sort(seatsList, new Comparator<Seat>() {
-//                        @Override
-//                        public int compare(Seat seat1, Seat seat2) {
-//                            // So sánh theo số ghế
-//                            return Integer.compare(seat1.getSeatNumber(), seat2.getSeatNumber());
-//                        }
-//                    });
-//                    // Duyệt từng ghế ngồi
-//                    for (Seat seat : seatsList) {
-//                        dataList.add(seat);
-//                    }
-//                    seatAdapter = new SodoTrainActivity.SeatAdapter(SodoTrainActivity.this, dataList);
-//                    RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getApplicationContext(),4);
-//                    recyclerView.setLayoutManager(layoutManager);
-//                    recyclerView.setAdapter(seatAdapter);
-//                }
-//            }
-//        }
-//    }
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -274,6 +228,7 @@ public class SodoTrainActivity extends AppCompatActivity {
                     Drawable currentBackground = holder.view_status.getBackground();
                     Drawable bookedDrawable = ContextCompat.getDrawable(mContext, R.drawable.seat_booked);
                     Drawable choseDrawable = ContextCompat.getDrawable(mContext, R.drawable.seat_chose);
+                    Drawable inchoseDrawable = ContextCompat.getDrawable(mContext, R.drawable.black_border);
 
                     // Nếu là booked thì không cho chọn
                     if (currentBackground == null || bookedDrawable == null || (currentBackground.getConstantState() == bookedDrawable.getConstantState())) {
@@ -289,11 +244,13 @@ public class SodoTrainActivity extends AppCompatActivity {
                         return;
                     }
 
-                    //Click chọn chỗ
-                    holder.view_status.setBackgroundResource(R.drawable.seat_chose);
-                    holder.view_tmp.setBackgroundColor(Color.parseColor("#00FFFF"));
-                    holder.item_seat_linear.setBackgroundResource(R.drawable.blue_border);
-                    seats.add(data);
+                    if (currentBackground.getConstantState() == inchoseDrawable.getConstantState()){
+                        //Click chọn chỗ
+                        holder.view_status.setBackgroundResource(R.drawable.seat_chose);
+                        holder.view_tmp.setBackgroundColor(Color.parseColor("#00FFFF"));
+                        holder.item_seat_linear.setBackgroundResource(R.drawable.blue_border);
+                        seats.add(data);
+                    }
                 }
             });
         }
@@ -346,7 +303,7 @@ public class SodoTrainActivity extends AppCompatActivity {
                         break;
                 }
                 for (Seat seat: seats){
-                    if(data.getSeatNumber() == seat.getSeatNumber()){
+                    if(data.getSeatNumber() == seat.getSeatNumber() && data.getCabin().equals(seat.getCabin()) ){
                         view_status.setBackgroundResource(R.drawable.seat_chose);
                         view_tmp.setBackgroundColor(Color.parseColor("#00FFFF"));
                         item_seat_linear.setBackgroundResource(R.drawable.blue_border);
