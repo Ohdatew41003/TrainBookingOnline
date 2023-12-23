@@ -3,13 +3,13 @@ package com.example.trainbookingonline;
 import java.io.Serializable;
 
 public class Seat implements Serializable {
-    private int seatNumber;
+    private String seatNumber;
     private int price;
     private String status;
     private String cabin;
     public Seat() {}
 
-    public Seat(int seatNumber, int price, String status, String cabin) {
+    public Seat(String seatNumber, int price, String status, String cabin) {
         this.seatNumber = seatNumber;
         this.price = price;
         this.status = status;
@@ -32,11 +32,11 @@ public class Seat implements Serializable {
         this.price = price;
     }
 
-    public int getSeatNumber() {
+    public String getSeatNumber() {
         return seatNumber;
     }
 
-    public void setSeatNumber(int seatNumber) {
+    public void setSeatNumber(String seatNumber) {
         this.seatNumber = seatNumber;
     }
 

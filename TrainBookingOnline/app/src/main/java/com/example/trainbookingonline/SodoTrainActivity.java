@@ -89,12 +89,32 @@ public class SodoTrainActivity extends AppCompatActivity {
             TrainTrip trainTrip = (TrainTrip) intent.getSerializableExtra("obj_traintrip");
             if (trainTrip != null) {
                 //Thông tin chuyến tàu
-                textViewIDTrain.setText(trainTrip.getIdTrain());
-                textView_noidi_noiden.setText(trainTrip.getGadi()+" - "+trainTrip.getGaden());
+                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                DatabaseReference trainsRef = database.getReference("trains");
+                Query query = trainsRef.orderByChild("trainId").equalTo(trainTrip.getIdTrain());
+                query.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()) {
+                            DataSnapshot trainSnapshot = snapshot.getChildren().iterator().next();
+                            Train train = trainSnapshot.getValue(Train.class);
+                            if (train != null) {
+                                textViewIDTrain.setText(train.getTrainName());
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+
+                textView_noidi_noiden.setText(trainTrip.getStationDepartureStation()+" - "+trainTrip.getStationArrivalStation());
                 try {
-                    SimpleDateFormat sdfInput = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
+                    SimpleDateFormat sdfInput = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
                     SimpleDateFormat sdfOutput = new SimpleDateFormat("HH:mm - dd/MM", Locale.getDefault());
-                    String ngaydi= trainTrip.getNgaydi();
+                    String ngaydi= trainTrip.getDayhoursDeparture();
                     Date date = sdfInput.parse(ngaydi);
                     String formattedDate = sdfOutput.format(date);
                     textView_thoigiandi.setText(formattedDate);
@@ -125,7 +145,7 @@ public class SodoTrainActivity extends AppCompatActivity {
                                     @Override
                                     public int compare(Seat seat1, Seat seat2) {
                                         // So sánh theo số ghế
-                                        return Integer.compare(seat1.getSeatNumber(), seat2.getSeatNumber());
+                                        return Integer.compare(Integer.parseInt(seat1.getSeatNumber()), Integer.parseInt(seat2.getSeatNumber()));
                                     }
                                 });
                                 // Duyệt từng ghế ngồi
@@ -163,7 +183,7 @@ public class SodoTrainActivity extends AppCompatActivity {
                     FirebaseDynamicLinks dynamicLinks = FirebaseDynamicLinks.getInstance();
                     Uri.Builder dynamicLinkUri = Uri.parse("https://trainbookingonline.page.link/traintrip")
                             .buildUpon()
-                            .appendQueryParameter("idTrainTrip", trainTrip.getIdTrainTrip()+""); // Thay đổi giá trị idTrainTrip ở đây
+                            .appendQueryParameter("idTrainTrip", trainTrip.getIdTrip()+""); // Thay đổi giá trị idTrainTrip ở đây
 
                     Log.d("link", dynamicLinkUri.toString());
                     Task<ShortDynamicLink> shortLinkTask = dynamicLinks.createDynamicLink()

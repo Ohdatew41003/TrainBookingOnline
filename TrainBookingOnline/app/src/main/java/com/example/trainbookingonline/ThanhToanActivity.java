@@ -59,6 +59,7 @@ public class ThanhToanActivity extends AppCompatActivity {
     private AlarmManager alarmManager;
     private PendingIntent pendingIntent;
     private Calendar calendar;
+    private List<String> lstseats;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +69,7 @@ public class ThanhToanActivity extends AppCompatActivity {
         createNotificationChannel();
 
         dataList=new ArrayList<>();
+        lstseats=new ArrayList<>();
         recyclerView=findViewById(R.id.list_ve);
         editTextText_hoten=findViewById(R.id.editTextText_hoten);
         editTextText_cccd=findViewById(R.id.editTextText_cccd);
@@ -146,9 +148,13 @@ public class ThanhToanActivity extends AppCompatActivity {
 //                                seatRef.child("status").setValue("booked");
 //                            }
 
+                            for(Seat seat: dataList){
+                                lstseats.add(seat.getCabin()+" - "+seat.getSeatNumber());
+                            }
                             Intent intent_Thanhtoan = new Intent(ThanhToanActivity.this,PhuongThucThanhToanActivity.class);
                             Bundle bundle= new Bundle();
                             bundle.putSerializable("obj_seats",new ArrayList<>(dataList)); //kiểu dữ liệu là ArrayList<Seat> (Danh sách ghế đã chọn)
+                            bundle.putSerializable("obj_lstseats",new ArrayList<>(lstseats)); //kiểu dữ liệu là ArrayList<String> (Danh sách ghế + cabin của ghế đã chọn)
                             bundle.putSerializable("obj_traintrip", trainTrip); //kiểu dữ liệu TrainTrip (Chuyến tàu)
                             bundle.putSerializable("obj_user",user); //kiểu dữ liệu user
                             intent_Thanhtoan.putExtras(bundle);
@@ -158,13 +164,13 @@ public class ThanhToanActivity extends AppCompatActivity {
                             Intent intentThongBao = new Intent(ThanhToanActivity.this,AlarmReceiver.class);
                             pendingIntent= PendingIntent.getBroadcast(ThanhToanActivity.this,0,intentThongBao,PendingIntent.FLAG_MUTABLE);
 
-                            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+                            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
                             Calendar calendar = Calendar.getInstance();
 //                            calendar.add(Calendar.SECOND, 5);
 
                             try {
 //                                Log.d("TAG", trainTrip.getNgaydi());
-                                Date date = dateFormat.parse(trainTrip.getNgaydi());
+                                Date date = dateFormat.parse(trainTrip.getDayhoursDeparture());
                                 calendar.setTime(date);
                                 calendar.add(Calendar.DATE, -1); //Thông báo trước 1 ngày
 //                                calendar.add(Calendar.MONTH,1);
@@ -280,14 +286,14 @@ public class ThanhToanActivity extends AppCompatActivity {
 
             public void bind(Seat seat, TrainTrip trainTrip) {
                 textView_toa_ghe.setText("Toa "+seat.getCabin().substring(5)+" - "+"Ghế "+seat.getSeatNumber());
-                textView_noidi_noiden_ticket.setText(trainTrip.getGadi()+" - "+trainTrip.getGaden());
+                textView_noidi_noiden_ticket.setText(trainTrip.getStationDepartureStation()+" - "+trainTrip.getStationArrivalStation());
                 NumberFormat formatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
                 String formattedNumber = formatter.format(seat.getPrice());
                 textView_tongtien_ticket.setText(formattedNumber);
                 try {
                     SimpleDateFormat sdfInput = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
                     SimpleDateFormat sdfOutput = new SimpleDateFormat("HH:mm dd/MM", Locale.getDefault());
-                    String ngaydi= trainTrip.getNgaydi();
+                    String ngaydi= trainTrip.getDayhoursDeparture();
                     Date date = sdfInput.parse(ngaydi);
                     String formattedDate = sdfOutput.format(date);
                     textView_thongtinve.setText("Đi "+trainTrip.getIdTrain()+" "+formattedDate);

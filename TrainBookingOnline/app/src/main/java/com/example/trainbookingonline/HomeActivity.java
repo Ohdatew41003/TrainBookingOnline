@@ -1,5 +1,6 @@
 package com.example.trainbookingonline;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -12,6 +13,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.RadioButton;
@@ -19,7 +21,15 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
 public class HomeActivity extends AppCompatActivity {
@@ -43,6 +53,7 @@ public class HomeActivity extends AppCompatActivity {
         Locale vietnamLocale = new Locale("vi", "VN");
         Locale.setDefault(vietnamLocale);
 
+        fetchProvincesFromFirebase();
 
         btn_swap= findViewById(R.id.btn_swap);
         btn_ngaydi=findViewById(R.id.btn_ngaydi);
@@ -132,6 +143,34 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
+    }
+    private void fetchProvincesFromFirebase() {
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("provinces");
+
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<String> provinceList = new ArrayList<>();
+
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    String provinceName = snapshot.child("province").getValue(String.class);
+                    provinceList.add(provinceName);
+                }
+
+                setupSpinner(provinceList);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Xử lý khi có lỗi xảy ra trong quá trình truy xuất dữ liệu từ Firebase
+            }
+        });
+    }
+    private void setupSpinner(List<String> provinceList) {
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, provinceList);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner_gadi.setAdapter(spinnerAdapter);
+        spinner_gaden.setAdapter(spinnerAdapter);
     }
 
     private void showDatePickerDialog(Button button) {

@@ -20,6 +20,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.text.ParseException;
@@ -61,7 +62,7 @@ public class TrainsActivity extends AppCompatActivity {
                     // Lặp qua từng đối tượng
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         TrainTrip trainTrip = snapshot.getValue(TrainTrip.class);
-                        if (trainTrip.getIdTrainTrip() != null && trainTrip.getGaden().equals(text_gaden) && trainTrip.getGadi().equals(text_gadi) && trainTrip.getNgaydi().contains(text_ngaydi)) {
+                        if (trainTrip.getIdTrip() != null && trainTrip.getProvinceArrivalStation().equals(text_gaden) && trainTrip.getProvinceDepartureStation().equals(text_gadi) && trainTrip.getDayhoursDeparture().contains(text_ngaydi)) {
                             dataList.add(trainTrip);
                         }
                     }
@@ -194,46 +195,65 @@ public class TrainsActivity extends AppCompatActivity {
             }
 
             public void bind(TrainTrip data) {
-                textViewIDTrain.setText(data.getIdTrain());
-                textView_noidi.setText(data.getGadi());
-                textView_noiden.setText(data.getGaden());
-                String ngaydi_db= data.getNgaydi();
-                String[] parts = ngaydi_db.split(" ");
-                String ngaydi= parts[0];
-                String giodi= parts[1];
-                String ngayden_db= data.getNgayden();
-                parts = ngayden_db.split(" ");
-                String ngayden= parts[0];
-                String gioden= parts[1];
-                textView_ngaydi.setText(ngaydi);
-                textView_giodi.setText(giodi);
-                textView_ngayden.setText(ngayden);
-                textView_gioden.setText(gioden);
-                textView_cho.setText("Chỗ còn "+150);
-                try {
-                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
-                    Date ngaydiDate = sdf.parse(ngaydi_db);
-                    Date ngaydenDate = sdf.parse(ngayden_db);
+                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                DatabaseReference trainsRef = database.getReference("trains");
+                Query query = trainsRef.orderByChild("trainId").equalTo(data.getIdTrain());
+                query.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()) {
+                            DataSnapshot trainSnapshot = snapshot.getChildren().iterator().next();
+                            Train train = trainSnapshot.getValue(Train.class);
+                            if (train != null) {
+                                textViewIDTrain.setText(train.getTrainName());
+                                textView_noidi.setText(data.getStationDepartureStation());
+                                textView_noiden.setText(data.getStationArrivalStation());
+                                String ngaydi_db = data.getDayhoursDeparture();
+                                String[] parts = ngaydi_db.split(" ");
+                                String ngaydi = parts[0];
+                                String giodi = parts[1];
+                                String ngayden_db = data.getDayhoursArrival();
+                                parts = ngayden_db.split(" ");
+                                String ngayden = parts[0];
+                                String gioden = parts[1];
+                                textView_ngaydi.setText(ngaydi);
+                                textView_giodi.setText(giodi);
+                                textView_ngayden.setText(ngayden);
+                                textView_gioden.setText(gioden);
+                                textView_cho.setText("Chỗ còn " + 150);
+                                try {
+                                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
+                                    Date ngaydiDate = sdf.parse(ngaydi_db);
+                                    Date ngaydenDate = sdf.parse(ngayden_db);
 
-                    Calendar calendar1 = Calendar.getInstance();
-                    Calendar calendar2 = Calendar.getInstance();
+                                    Calendar calendar1 = Calendar.getInstance();
+                                    Calendar calendar2 = Calendar.getInstance();
 
-                    calendar1.setTime(ngaydiDate);
-                    calendar2.setTime(ngaydenDate);
+                                    calendar1.setTime(ngaydiDate);
+                                    calendar2.setTime(ngaydenDate);
 
-                    long diffInMillis = Math.abs(calendar2.getTimeInMillis() - calendar1.getTimeInMillis());
+                                    long diffInMillis = Math.abs(calendar2.getTimeInMillis() - calendar1.getTimeInMillis());
 
-                    long diffInSeconds = TimeUnit.MILLISECONDS.toSeconds(diffInMillis);
-                    long days = diffInSeconds / (24 * 3600);
-                    long remainingSeconds = diffInSeconds % (24 * 3600);
-                    long hours = remainingSeconds / 3600;
-                    long remainingMinutes = (remainingSeconds % 3600) / 60;
+                                    long diffInSeconds = TimeUnit.MILLISECONDS.toSeconds(diffInMillis);
+                                    long days = diffInSeconds / (24 * 3600);
+                                    long remainingSeconds = diffInSeconds % (24 * 3600);
+                                    long hours = remainingSeconds / 3600;
+                                    long remainingMinutes = (remainingSeconds % 3600) / 60;
 
-                    String result = days + "d " + hours + "h " + remainingMinutes + "m";
-                    textView_thoigian.setText(result);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
+                                    String result = days + "d " + hours + "h " + remainingMinutes + "m";
+                                    textView_thoigian.setText(result);
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Toast.makeText(mContext, "Lỗi", Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         }
     }

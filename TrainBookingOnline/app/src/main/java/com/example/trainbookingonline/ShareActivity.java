@@ -31,7 +31,7 @@ public class ShareActivity extends AppCompatActivity {
         if (appLinkData != null) {
             String idTrainTrip = appLinkData.getQueryParameter("idTrainTrip");
             if (idTrainTrip != null) {
-                Query query = tripsRef.orderByChild("idTrainTrip").equalTo(idTrainTrip);
+                Query query = tripsRef.orderByChild("idTrip").equalTo(idTrainTrip);
                 query.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
