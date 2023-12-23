@@ -27,6 +27,9 @@ public class PhuongThucThanhToanActivity extends AppCompatActivity {
                     tongtien+=seat.getPrice();
                 }
             }
+            for (String i: lstseats){
+                Log.d("TAG", i.toString());
+            }
             Log.d("onCreate: ", seats.size()+", "+lstseats.size()+", "+trainTrip.getIdTrip()+", "+user.getEmail()+", "+tongtien);
         }
     }
