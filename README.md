@@ -9,12 +9,14 @@
 
 ## 🔧 Công nghệ sử dụng / Technologies Used
 
-| Công nghệ | Mục đích | Ghi chú |
-|----------|----------|--------|
-| Android (Java/Kotlin) | Nền tảng chính | Android Studio |
-| Firebase Realtime Database | Lưu trữ & quản lý dữ liệu | Không sử dụng SQL |
-| Google Maps SDK | Tích hợp bản đồ | Hiển thị vị trí ga tàu |
-| Firebase Authentication | (Tuỳ chọn) Xác thực người dùng | Đăng ký/Đăng nhập |
+| Công nghệ                  | Mục đích                        | Ghi chú                          |
+|---------------------------|----------------------------------|----------------------------------|
+| Android (Java/Kotlin)     | Nền tảng chính                   | Android Studio                   |
+| Firebase Realtime Database| Lưu trữ & quản lý dữ liệu thời gian thực |            |
+| Firebase Storage          | Lưu trữ file (ảnh, vé PDF,...)  | Tải lên và tải xuống tệp        |
+| Google Maps SDK           | Tích hợp bản đồ                  | Hiển thị vị trí ga tàu          |
+| Firebase Authentication   | (Tuỳ chọn) Xác thực người dùng   | Đăng ký/Đăng nhập                |
+
 
 ---
 
