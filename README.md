@@ -41,9 +41,10 @@
 
 ## 📷 Ảnh minh hoạ (Screenshots)
 
->![image](https://github.com/user-attachments/assets/b62e8a79-592a-4688-bcc6-f74b6b34a7ab)
+>![image](https://github.com/user-attachments/assets/fbeed0e1-0289-4d3c-9f6b-690eaa63f355)
 
-> ![image](https://github.com/user-attachments/assets/b4378c12-e4df-40c6-b10c-921656783b8c)
+>![image](https://github.com/user-attachments/assets/822cd043-5636-4dae-83b7-a64998511f32)
+
 
 
 ## 🛠️ Cài đặt / Installation
